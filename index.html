@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mohammed Raheem CK | Interactive Cloud Portfolio</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .content-layer {
+            position: relative;
+            z-index: 10;
+        }
+        #networkCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+    </style>
+    <script>
+        // Dark Mode Logic
+        function toggleDarkMode() {
+            document.documentElement.classList.toggle('dark');
+            localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
+        }
+        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+
+        // Dynamic Skills Filtering
+        function filterSkills(category) {
+            const items = document.querySelectorAll('.skill-badge');
+            const buttons = document.querySelectorAll('.filter-btn');
+            
+            buttons.forEach(btn => btn.classList.remove('bg-blue-600', 'text-white'));
+            buttons.forEach(btn => {
+                if(btn.getAttribute('data-cat') === category) {
+                    btn.classList.add('bg-blue-600', 'text-white');
+                }
+            });
+
+            items.forEach(item => {
+                if (category === 'all' || item.getAttribute('data-category') === category) {
+                    item.style.display = 'inline-flex';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+
+        // Dynamic Project Search
+        function searchProjects() {
+            const query = document.getElementById('projectSearch').value.toLowerCase();
+            const cards = document.querySelectorAll('.project-card');
+
+            cards.forEach(card => {
+                const title = card.querySelector('.project-title').innerText.toLowerCase();
+                const desc = card.querySelector('.project-desc').innerText.toLowerCase();
+                const tags = card.querySelector('.project-tags').innerText.toLowerCase();
+
+                if (title.includes(query) || desc.includes(query) || tags.includes(query)) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        // Dynamic Certificate Modal
+        function openCertModal(imageSrc, certTitle) {
+            document.getElementById('modalImage').src = imageSrc;
+            document.getElementById('modalTitle').innerText = certTitle;
+            document.getElementById('certModal').classList.remove('hidden');
+            document.getElementById('certModal').classList.add('flex');
+        }
+
+        function closeCertModal() {
+            document.getElementById('certModal').classList.add('hidden');
+            document.getElementById('certModal').classList.remove('flex');
+        }
+    </script>
+</head>
+<body class="bg-slate-50 text-slate-800 dark:bg-slate-900 dark:text-slate-100 transition-colors duration-300 font-sans">
+
+    <!-- Live Network Background Canvas -->
+    <canvas id="networkCanvas"></canvas>
+
+    <div class="content-layer">
+        <!-- Navbar -->
+        <nav class="sticky top-0 z-40 bg-white/70 dark:bg-slate-900/70 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 transition-colors">
+            <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+                <span class="text-xl font-bold tracking-tight text-blue-600 dark:text-blue-400">Raheem.dev</span>
+                <div class="flex items-center space-x-6">
+                    <a href="#about" class="hover:text-blue-600 dark:hover:text-blue-400 text-sm font-medium transition">About</a>
+                    <a href="#skills" class="hover:text-blue-600 dark:hover:text-blue-400 text-sm font-medium transition">Skills</a>
+                    <a href="#projects" class="hover:text-blue-600 dark:hover:text-blue-400 text-sm font-medium transition">Projects</a>
+                    <a href="#contact" class="hover:text-blue-600 dark:hover:text-blue-400 text-sm font-medium transition">Contact</a>
+                    <button onclick="toggleDarkMode()" class="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 transition" aria-label="Toggle dark mode">
+                        <i class="fa-solid fa-moon dark:hidden text-slate-600"></i>
+                        <i class="fa-solid fa-sun hidden dark:block text-amber-400"></i>
+                    </button>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Hero / About Section -->
+        <header id="about" class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-20 flex flex-col items-start space-y-6">
+            <div class="space-y-2">
+                <h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight">Mohammed Raheem CK</h1>
+                <p class="text-xl sm:text-2xl font-semibold text-blue-600 dark:text-blue-400">Network & Cloud Engineer</p>
+            </div>
+            <p class="text-lg text-slate-600/90 dark:text-slate-400/90 max-w-3xl leading-relaxed backdrop-blur-xs">
+                Computer Science graduate specialized in engineering, securing, and operating production-ready infrastructure. Certified in mapping local corporate networks cleanly into automated, highly available Microsoft Azure environments.
+            </p>
+            <div class="flex flex-wrap gap-4 pt-2">
+                <a href="#contact" class="px-5 py-2.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-medium flex items-center space-x-2 transition shadow-sm">
+                    <i class="fa-solid fa-envelope"></i> <span>Get In Touch</span>
+                </a>
+                <a href="https://github.com/yourusername" target="_blank" class="px-5 py-2.5 rounded-lg bg-white/80 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 font-medium flex items-center space-x-2 transition backdrop-blur-xs">
+                    <i class="fa-brands fa-github"></i> <span>GitHub</span>
+                </a>
+            </div>
+        </header>
+
+        <main class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 space-y-24 pb-20">
+            
+            <!-- Interactive Certifications & Credentials Section -->
+            <section id="skills" class="space-y-8 scroll-mt-20">
+                <h2 class="text-3xl font-bold border-b pb-2 border-slate-200 dark:border-slate-800"><i class="fa-solid fa-award text-blue-500 mr-2"></i> Verified Cloud & Network Credentials</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <!-- Azure Credential Card -->
+                    <div onclick="openCertModal('https://via.placeholder.com/600x400?text=Azure+Administrator+Certificate', 'Microsoft Certified: Azure Administrator Associate')" class="p-4 bg-white/90 dark:bg-slate-800/90 border-2 border-blue-500 dark:border-blue-400 rounded-xl flex items-center justify-between cursor-pointer hover:scale-[1.01] transition group shadow-md backdrop-blur-xs">
+                        <div class="flex items-center space-x-3">
+                            <i class="fa-brands fa-microsoft text-2xl text-cyan-500"></i>
+                            <div>
+                                <h4 class="font-bold text-sm sm:text-base">Azure Administrator</h4>
+                                <p class="text-xs text-slate-500">AZ-104 Certified</p>
+                            </div>
+                        </div>
+                        <span class="text-xs text-blue-600 dark:text-blue-400 font-medium group-hover:underline"><i class="fa-solid fa-expand"></i></span>
+                    </div>
+
+                    <!-- CCNA Card -->
+                    <div onclick="openCertModal('https://via.placeholder.com/600x400?text=CCNA+Certificate+Image+Link', 'Cisco CCNA Certification')" class="p-4 bg-white/90 dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700 rounded-xl flex items-center justify-between cursor-pointer hover:border-blue-500 dark:hover:border-blue-400 transition group shadow-sm backdrop-blur-xs">
+                        <div class="flex items-center space-x-3">
+                            <i class="fa-solid fa-network-wired text-2xl text-blue-500"></i>
+                            <div>
+                                <h4 class="font-bold text-sm sm:text-base">Cisco CCNA</h4>
+                                <p class="text-xs text-slate-500">Routing & Switching</p>
+                            </div>
+                        </div>
+                        <span class="text-xs text-blue-600 dark:text-blue-400 font-medium group-hover:underline"><i class="fa-solid fa-expand"></i></span>
+                    </div>
+
+                    <!-- MCSA Card -->
+                    <div onclick="openCertModal('https://via.placeholder.com/600x400?text=MCSA+Certificate+Image+Link', 'Microsoft Certified Solutions Associate')" class="p-4 bg-white/90 dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700 rounded-xl flex items-center justify-between cursor-pointer hover:border-blue-500 dark:hover:border-blue-400 transition group shadow-sm backdrop-blur-xs">
+                        <div class="flex items-center space-x-3">
+                            <i class="fa-solid fa-server text-2xl text-purple-500"></i>
+                            <div>
+                                <h4 class="font-bold text-sm sm:text-base">MCSA</h4>
+                                <p class="text-xs text-slate-500">Windows Server OS</p>
+                            </div>
+                        </div>
+                        <span class="text-xs text-blue-600 dark:text-blue-400 font-medium group-hover:underline"><i class="fa-solid fa-expand"></i></span>
+                    </div>
+                </div>
+
+                <!-- Skills Segment Filter -->
+                <div class="space-y-4 pt-4">
+                    <h3 class="text-lg font-bold">Filter Skills Expertise</h3>
+                    <div class="flex flex-wrap gap-2">
+                        <button onclick="filterSkills('all')" data-cat="all" class="filter-btn px-4 py-1.5 text-xs font-semibold rounded-lg bg-blue-600 text-white transition shadow-xs">All Skills</button>
+                        <button onclick="filterSkills('cloud')" data-cat="cloud" class="filter-btn px-4 py-1.5 text-xs font-semibold rounded-lg bg-white/80 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 transition backdrop-blur-xs">Azure & Cloud Ops</button>
+                        <button onclick="filterSkills('networking')" data-cat="networking" class="filter-btn px-4 py-1.5 text-xs font-semibold rounded-lg bg-white/80 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 transition backdrop-blur-xs">Networking</button>
+                        <button onclick="filterSkills('cs')" data-cat="cs" class="filter-btn px-4 py-1.5 text-xs font-semibold rounded-lg bg-white/80 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 transition backdrop-blur-xs">Core Computer Science</button>
+                    </div>
+
+                    <div class="flex flex-wrap gap-2.5 pt-2">
+                        <span data-category="cloud" class="skill-badge inline-flex items-center px-3 py-1.5 rounded-lg bg-white/90 dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700 text-sm font-medium backdrop-blur-xs"><i class="fa-solid fa-circle text-[8px] text-cyan-500 mr-2"></i>Azure Administration (AZ-104)</span>
+                        <span data-category="cloud" class="skill-badge inline-flex items-center px-3 py-1.5 rounded-lg bg-white/90 dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700 text-sm font-medium backdrop-blur-xs"><i class="fa-solid fa-circle text-[8px] text-cyan-500 mr-2"></i>Azure Virtual Networks, NSGs & VPN Gateways</span>
+                        <span data-category="cloud" class="skill-badge inline-flex items-center px-3 py-1.5 rounded-lg bg-white/90 dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700 text-sm font-medium backdrop-blur-xs"><i class="fa-solid fa-circle text-[8px] text-cyan-500 mr-2"></i>Active Directory & Azure AD Integration</span>
+                        <span data-category="networking" class="skill-badge inline-flex items-center px-3 py-1.5 rounded-lg bg-white/90 dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700 text-sm font-medium backdrop-blur-xs"><i class="fa-solid fa-circle text-[8px] text-blue-500 mr-2"></i>OSPF & EIGRP Routing</span>
+                        <span data-category="networking" class="skill-badge inline-flex items-center px-3 py-1.5 rounded-lg bg-white/90 dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700 text-sm font-medium backdrop-blur-xs"><i class="fa-solid fa-circle text-[8px] text-blue-500 mr-2"></i>VLAN Segregation & Access Lists</span>
+                        <span data-category="networking" class="skill-badge inline-flex items-center px-3 py-1.5 rounded-lg bg-white/90 dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700 text-sm font-medium backdrop-blur-xs"><i class="fa-solid fa-circle text-[8px] text-blue-500 mr-2"></i>Cisco Packet Tracer / GNS3 Topology</span>
+                        <span data-category="cs" class="skill-badge inline-flex items-center px-3 py-1.5 rounded-lg bg-white/90 dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700 text-sm font-medium backdrop-blur-xs"><i class="fa-solid fa-circle text-[8px] text-emerald-500 mr-2"></i>Data Structures & Logic</span>
+                        <span data-category="cs" class="skill-badge inline-flex items-center px-3 py-1.5 rounded-lg bg-white/90 dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700 text-sm font-medium backdrop-blur-xs"><i class="fa-solid fa-circle text-[8px] text-emerald-500 mr-2"></i>Systems Infrastructure Architecture</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Real-time Searchable Projects Section -->
+            <section id="projects" class="space-y-6 scroll-mt-20">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b pb-2 border-slate-200 dark:border-slate-800 gap-4">
+                    <h2 class="text-3xl font-bold"><i class="fa-solid fa-code text-blue-500 mr-2"></i> Infrastructure Projects</h2>
+                    <div class="relative max-w-xs w-full">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
+                            <i class="fa-solid fa-magnifying-glass text-sm"></i>
+                        </span>
+                        <input type="text" id="projectSearch" onkeyup="searchProjects()" placeholder="Search cloud tools, routing..." class="w-full pl-9 pr-4 py-1.5 bg-white/90 dark:bg-slate-800/90 border border-slate-300 dark:border-slate-700 rounded-lg text-sm outline-none focus:ring-2 focus:ring-blue-500 transition backdrop-blur-xs">
+                    </div>
+                </div>
+
+                <div id="projectsContainer" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Project 1 -->
+                    <div class="project-card p-6 bg-white/90 dark:bg-slate-800/90 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col justify-between transition backdrop-blur-xs">
+                        <div>
+                            <h3 class="project-title text-xl font-bold mb-2 text-slate-900 dark:text-slate-100">Hybrid Cloud Enterprise Migration</h3>
+                            <p class="project-desc text-sm text-slate-600 dark:text-slate-400 mb-4">
+                                Architected and implemented a complete secure connection linking an on-premises enterprise Active Directory network directly into Microsoft Azure using Virtual Network Gateways, automated Network Security Groups (NSGs), and structured access management policies.
+                            </p>
+                        </div>
+                        <div class="project-tags flex flex-wrap gap-2">
+                            <span class="text-xs font-semibold px-2 py-1 bg-slate-100 dark:bg-slate-700 rounded text-slate-600 dark:text-slate-300">Azure Virtual Networks</span>
+                            <span class="text-xs font-semibold px-2 py-1 bg-slate-100 dark:bg-slate-700 rounded text-slate-600 dark:text-slate-300">Active Directory</span>
+                            <span class="text-xs font-semibold px-2 py-1 bg-slate-100 dark:bg-slate-700 rounded text-slate-600 dark:text-slate-300">Azure IaaS</span>
+                        </div>
+                    </div>
+
+                    <!-- Project 2 -->
+                    <div class="project-card p-6 bg-white/90 dark:bg-slate-800/90 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col justify-between transition backdrop-blur-xs">
+                        <div>
+                            <h3 class="project-title text-xl font-bold mb-2 text-slate-900 dark:text-slate-100">Multi-Site Scalable Topology Simulation</h3>
+                            <p class="project-desc text-sm text-slate-600 dark:text-slate-400 mb-4">
+                                Engineered a complete company branch network architecture in GNS3, utilizing complex OSPF configurations, redundant trunk paths, cross-VLAN structural isolation, and firewall traffic monitoring.
+                            </p>
+                        </div>
+                        <div class="project-tags flex flex-wrap gap-2">
+                            <span class="text-xs font-semibold px-2 py-1 bg-slate-100 dark:bg-slate-700 rounded text-slate-600 dark:text-slate-300">Cisco iOS</span>
+                            <span class="text-xs font-semibold px-2 py-1 bg-slate-100 dark:bg-slate-700 rounded text-slate-600 dark:text-slate-300">GNS3 Topology</span>
+                            <span class="text-xs font-semibold px-2 py-1 bg-slate-100 dark:bg-slate-700 rounded text-slate-600 dark:text-slate-300">ACL Security</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Experience & Education -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+                <section class="md:col-span-2 space-y-6">
+                    <h3 class="text-2xl font-bold border-b pb-2 border-slate-200 dark:border-slate-800"><i class="fa-solid fa-briefcase text-blue-500 mr-2"></i> Experience</h3>
+                    <div class="border-l-2 border-slate-200 dark:border-slate-700 pl-4 space-y-6">
+                        <div>
+                            <span class="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wider">Systems Management</span>
+                            <h4 class="font-bold text-lg">Accounts cum Billing Professional</h4>
+                            <ul class="list-disc pl-5 text-sm text-slate-600/90 dark:text-slate-400/90 mt-2 space-y-1">
+                                <li>Supervised systemic operations ensuring database and record data integrity across business units.</li>
+                    
